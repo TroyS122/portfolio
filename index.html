@@ -12,6 +12,17 @@
     <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
+<script>
+    document.getElementById("view-classwork").addEventListener("click", function() {
+        var dropdown = document.getElementById("classwork-dropdown");
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    });
+</script>
+
 </head>
 
 <body>
