@@ -319,11 +319,12 @@
     // Get all image elements with src="images/project.jpg"
     var images = document.querySelectorAll('img[src="images/project.jpg"]');
 
-    // Remove each image from the DOM
+    // Loop through the images and set their parent element's innerHTML to an empty string
     images.forEach(function (image) {
-        image.parentNode.removeChild(image);
+        image.parentNode.innerHTML = '';
     });
     </script>
+
 </body>
 
 </html>
