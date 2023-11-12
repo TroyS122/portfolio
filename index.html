@@ -262,32 +262,13 @@ As I get closer to graduating I am becoming more eager to start my journey in th
                     <div class="project-info">
                         <h3>Classwork</h3>
                     	<ul>
-       				 <li><a href="#" onclick="openFile('images/Computer Assisted Instruction.txt')">Computer Assisted Instruction</a></li>
-       				 <li><a href="#" onclick="openFile('images/Number to Word Converter.txt')">Number to Word Converter</a></li>
-      				 <li><a href="#" onclick="openFile('images/Poker Simulation.txt')">Poker Simulation</a></li>
+                        	<li><a href="images/Computer Assisted Instruction">Computer Assisted Instruction</a></li>
+                        	<li><a href="images/Number to Word Converter">Number to Word Converter</a></li>
+                        	<li><a href="images/Poker Simulation">Poker Simulation</a></li>
 
 
                        		 <!-- Add more files as needed -->
-                    	</ul>
-			<script>
-        function openFile(fileName) {
-            var fileContent = "Content of " + fileName;
-            var blob = new Blob([fileContent], { type: 'text/plain' });
-            var url = URL.createObjectURL(blob);
-
-            // Create an invisible anchor element
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-
-            // Append the anchor to the body and click it programmatically
-            document.body.appendChild(a);
-            a.click();
-
-            // Remove the anchor from the body
-            document.body.removeChild(a);
-        }
-    			</script>    
+                    	</ul>  
                     </div>
                     <!-- End .project-info -->
                 </div>
