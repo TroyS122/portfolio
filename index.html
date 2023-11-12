@@ -262,12 +262,32 @@ As I get closer to graduating I am becoming more eager to start my journey in th
                     <div class="project-info">
                         <h3>Classwork</h3>
                     	<ul>
-				<li><a href="notepad.exe,data:text/plain;charset=utf-8,Computer Assisted Instruction.txt" target="_blank">Open Text File</a></li>
-				<li><a href="notepad.exe,data:text/plain;charset=utf-8,Number to Word Converter.txt" target="_blank">Open Text File</a></li>
-				<li><a href="notepad.exe,data:text/plain;charset=utf-8,Poker Simulation.txt" target="_blank">Open Text File</a></li>
+       				 <li><a href="#" onclick="openFile('Computer Assisted Instruction.txt')">Open Computer Assisted Instruction File</a></li>
+       				 <li><a href="#" onclick="openFile('Number to Word Converter.txt')">Open Number to Word Converter File</a></li>
+      				 <li><a href="#" onclick="openFile('Poker Simulation.txt')">Open Poker Simulation File</a></li>
+
 
                        		 <!-- Add more files as needed -->
-                    		</ul>
+                    	</ul>
+			<script>
+        function openFile(fileName) {
+            var fileContent = "Content of " + fileName;
+            var blob = new Blob([fileContent], { type: 'text/plain' });
+            var url = URL.createObjectURL(blob);
+
+            // Create an invisible anchor element
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+
+            // Append the anchor to the body and click it programmatically
+            document.body.appendChild(a);
+            a.click();
+
+            // Remove the anchor from the body
+            document.body.removeChild(a);
+        }
+    			</script>    
                     </div>
                     <!-- End .project-info -->
                 </div>
