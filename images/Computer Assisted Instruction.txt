@@ -1,0 +1,31 @@
+#Computer-assisted instruction
+import random
+
+correct = ['Very good!', 'Nice work!', 'Keep up the good work!'] #phrases if correct
+incorrect = ['No. Please try again.', 'Wrong. Try once more.', 'No. Keep trying.'] #phrases if incorrect
+
+def get_numbers(): #chooses two random numbers
+    num1 = random.randint(0, 9) #chooses number 1, which is 0-9
+    num2 = random.randint(0, 9) #chooses number 2, which is 0-9
+    return num1, num2 
+
+while True:
+    num1, num2 = get_numbers()
+    print('How much is', num1,'*', num2) #asks how much the two numbers multiplied together is
+    ans = int(input('Enter your answer (-1 to exit): ')) #allows user to input answer
+
+    if ans == -1: #if users enters -1 the loop stops
+        print("Goodbye!")
+        break
+        
+    if num1 * num2 == ans: 
+        random_correct = random.choice(correct)
+        print(random_correct)   #if user gets correct answer it prints a random correct phrase
+    else:
+        while ans != num1 * num2:
+            random_incorrect = random.choice(incorrect) 
+            print(random_incorrect)  #if user gets incorrect answer it prints a random incorrect phrase
+            ans = int(input('Enter your answer (-1 to exit): ')) #repromts user to answer
+        random_correct = random.choice(correct)
+        print(random_correct)  #if user gets correct answer it prints a random correct phrase
+

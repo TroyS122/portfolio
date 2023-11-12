@@ -1,0 +1,35 @@
+# number to word dictionary
+number_to_word = {0: 'ZERO', 1: 'ONE', 2: 'TWO', 3: 'THREE', 4: 'FOUR', 5: 'FIVE', 6: 'SIX', 7: 'SEVEN', 8: 'EIGHT', 9: 'NINE',
+    10: 'TEN', 11: 'ELEVEN', 12: 'TWELVE', 13: 'THIRTEEN', 14: 'FOURTEEN', 15: 'FIFTEEN', 16: 'SIXTEEN', 17: 'SEVENTEEN',
+    18: 'EIGHTEEN', 19: 'NINETEEN', 20: 'TWENTY', 30: 'THIRTY', 40: 'FORTY', 50: 'FIFTY', 60: 'SIXTY', 70: 'SEVENTY',
+    80: 'EIGHTY', 90: 'NINETY'}
+
+#coverts the check amount to words if within bounds
+def convert_to_words(check_amount):
+    if check_amount < 0 or check_amount >= 1000:
+        return 'Amount must be greater than 0 and smaller than 1000'   
+    if check_amount in number_to_word:
+        return number_to_word[check_amount]
+
+#Pulls numbers in the correct placement
+    if check_amount < 100:
+        tens = check_amount - check_amount % 10
+        ones = check_amount % 10
+        return number_to_word[tens] + '-' + number_to_word[ones]
+    
+    hundreds = check_amount // 100
+    remainder = check_amount % 100
+  
+    if remainder == 0:
+        return number_to_word[hundreds] +  'HUNDRED'
+    else:
+        return number_to_word[hundreds] + 'HUNDRED AND ' + convert_to_words(remainder)
+    
+    
+#User inputs amount and converts it to words
+check_amount = int(input('Enter a numeric check amount (less than 1000): '))
+if check_amount < 0 or check_amount >= 1000:
+    print('Amount must be greater than 0 and smaller than 1000')
+else:
+    words = convert_to_words(check_amount)
+    print('Amount in words:', words,'DOLLARS')

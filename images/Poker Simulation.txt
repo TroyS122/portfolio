@@ -1,0 +1,86 @@
+#Poker Simulation
+import random
+import numpy as np
+
+FACES = ['Ace', 'Deuce', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King']
+SUITS = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+
+#Function to initialize deck
+def initialize_deck():
+    deck = []
+    for face in FACES:
+        for suit in SUITS:
+            deck.append((face, suit))
+    random.shuffle(deck)
+    return deck
+
+#Initializes the deck
+deck = initialize_deck()
+
+#prints the deck with four columns
+for i in range(0, len(deck), 4):
+    for j in range(4):
+        if i + j < len(deck):
+            face, suit = deck[i + j]
+            print(f"{face} of {suit:<9}", end="\t")
+    print()
+print()
+
+#Deals five cards
+def deal_five_cards(deck):
+    hand = []
+    for i in range(5):
+        hand.append(deck.pop())
+    return hand
+
+#Evaluation functions
+def is_pair(hand):
+    unique_faces = np.unique([card[0] for card in hand])
+    return len(unique_faces) == 4
+
+def is_two_pairs(hand):
+    unique_faces = np.unique([card[0] for card in hand])
+    return len(unique_faces) == 3
+
+def is_three_of_a_kind(hand):
+    unique_faces = np.unique([card[0] for card in hand])
+    return len(unique_faces) == 2
+
+def is_full_house(hand):
+    unique_faces = np.unique([card[0] for card in hand])
+    return len(unique_faces) == 2 and len(hand) == 5
+
+def is_four_of_a_kind(hand):
+    unique_faces = np.unique([card[0] for card in hand])
+    return len(unique_faces) == 2 and len(hand) == 4
+
+def is_high_card(hand):
+    unique_faces = np.unique([card[0] for card in hand])
+    return len(unique_faces) == 5
+
+#Evaluates hand
+def evaluate_hand(hand):
+    if is_four_of_a_kind(hand):
+        return "Four of a kind", hand
+    elif is_full_house(hand):
+        return "Full house", hand
+    elif is_three_of_a_kind(hand):
+        return "Three of a kind", hand
+    elif is_two_pairs(hand):
+        return "Two pairs", hand
+    elif is_pair(hand):
+        return "One pair", hand
+    else:
+        return "High card", hand
+
+#Deals 10 hands and evaluates
+for i in range(10):
+    hand = deal_five_cards(deck)
+    hand_type, specific_hand = evaluate_hand(hand)
+    
+    print(f"{hand_type}:") #Print hand type
+    
+    for card in specific_hand: 
+        print(f"{card[0]} of {card[1]}")#Print specific cards
+    
+    print()#adds a blank line
