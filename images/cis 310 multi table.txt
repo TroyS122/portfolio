@@ -1,0 +1,238 @@
+--============================== 
+--===Multi Table Queries=======
+--==============================
+
+--*****ALWYAS USE JOIN STATEMENTS TO JOIN TBALES, not book method*****
+
+--==========JOINING TABLES & Using Aliases============
+/*FIRST, VISUALIZE JOIN TYPES THROUGH PERFORMING BY HAND IN EXCEL. */
+------------------INNER JOINS----------------
+--1.List the ID, first name, and last name of each customer, 
+--together with the ID, first name, and last name of the sales rep who represents the customer.
+
+SELECT CUSTOMER.CUST_ID, CUSTOMER.FIRST_NAME, CUSTOMER.LAST_NAME, SALES_REP.REP_ID, SALES_REP.FIRST_NAME, SALES_REP.LAST_NAME
+	FROM CUSTOMER INNER JOIN SALES_REP ON CUSTOMER.REP_ID = SALES_RE_ID;
+
+SELECT CUSTOMER.LAST_NAME, SALES_REP.REP_ID, SALES_REP.FIRST_NAME, SALES_REP.LAST_NAME
+	FROM CUSTOMER INNER JOIN SALES_REP ON CUSTOMER.REP_ID = SALES_REP_ID;
+
+
+SELECT CUSTOMER.LAST_NAME AS CUSTLNAME, SALES_REP.REP_ID, SALES_REP.FIRST_NAME AS REPFNAME, SALES_REP.LAST_NAME AS SALESLNAME
+	FROM CUSTOMER INNER JOIN SALES_REP ON CUSTOMER.REP_ID = SALES_RE_ID;
+
+SELECT C.LAST_NAME AS CUSTLNAME, S.REP_ID, S.FIRST_NAME AS REPFNAME, S.LAST_NAME AS SALESLNAME
+	FROM CUSTOMER C INNER JOIN SALES_REP S ON C.REP_ID = S.REP_ID;
+
+--2.List the ID, first name, and last name of each customer whose credit limit is $500, 
+--together with the ID, first name, and last name of the sales rep who represents the customer.
+
+SELECT C.LAST_NAME AS CUSTLNAME, S.REP_ID, S.FIRST_NAME AS REPFNAME, S.LAST_NAME AS SALESLNAME
+	FROM CUSTOMER C INNER JOIN SALES_REP S ON C.REP_ID = S.REP_ID
+		WHERE CREDIT_LIMIT = 500;
+
+--3.Display the ID, first name, and last name for each customer, 
+--along with the invoice number, and invoice date for each invoice. 
+--Sort the results by customer ID.
+
+SELECT C.CUST_ID, C.FIRST_NAME AS CUSTFNAME, C.LAST_NAME AS CUSTLNAME, I.INVOICE_NUM, INVOICE_DATE
+	FROM CUSTOMER C INNER JOIN INVOICES I ON C.CUST_ID = I.CUST_ID
+		ORDER BY C.CUST_ID;
+
+--4.For every item on an invoice, list the invoice number, item ID, 
+--description, quantity ordered, quoted price, and unit price.
+
+SELECT IL.INVOICE_NUM, IL.ITEM_ID, DESCRIPTION, QUANTITY,  QUOTED_PRICE, PRICE
+	FROM ITEM I INNER JOIN INVOICE_LINE IL ON I.ITEM_ID = IL.ITEM_ID;
+
+--5.For each item on an invoice, list the item ID, quantity ordered, 
+--invoice number, invoice date, 
+--customer ID, customer first name, and customer last name, 
+--along with the last name of the sales rep who represents each customer.
+
+SELECT ITEM_ID, QUANTITY, I.INVOICE_NUM, INVOICE_DATE, C.CUST_ID, C.FIRST_NAME, C.LAST_NAME, SR.LAST_NAME AS REP_LASTNAME
+	FROM INVOICE_LINE IL INNER JOIN INVOICES I ON IL.INVOICE_NUM = I.INVOICE_NUM
+		INNER JOIN CUSTOMER C ON I.CUST_ID = C.CUST_ID
+		INNER JOIN SALES_REP SR ON C.REP_ID = SR.REP_ID;
+
+------------------OUTER JOINS----------------
+--Display the ID, first name, and last name for each customer, 
+--along with the invoice number, and invoice date for all invoices. 
+--Include all customers in the results. 
+--For customers that do not have invoices, omit the invoice number and invoice date.
+
+
+SELECT * FROM CUSTOMER;
+SELECT * FROM INVOICES;
+
+SELECT C.CUST_ID, FIRST_NAME, LAST_NAME, INVOICE_NUM, INVOICE_DATE
+	FROM CUSTOMER C LEFT JOIN INVOICE I ON C.CUST_ID = I.CUST_ID
+		ORDER BY C.CUST_ID;
+
+SELECT C.CUST_ID, FIRST_NAME, LAST_NAME, INVOICE_NUM, INVOICE_DATE
+	FROM INVOICE I RIGHT JOIN CUSTOMER C ON C.CUST_ID = I.CUST_ID
+		ORDER BY C.CUST_ID;
+
+
+
+
+--==========JOIN vs. IN============
+--1.Find the description of each item included in invoice number 14233.
+
+SELECT DESCRIPTION
+	FROM INVOICE_LINE IL INNER JOIN IT I ON IL.ITEM_ID = I.ITEM_ID
+		WHERE INVOICE_NUM = '14233';
+
+SELECT DESCRIPTION
+	FROM ITEM
+		WHERE ITEM_ID IN (SELECT ITEM_ID
+						FROM INVOICE_LINE
+							WHERE INVOICE_NUM = '14233');
+--==========Subquery within Subqeury============
+--2. Find the invoice number and invoice date for each invoice 
+--that includes an item stored in location C.
+
+SELECT INVOICE_NUM, INVOICE_DATE
+	FROM INVOICES
+		WHERE INVOICE_NUM IN (SELECT IVOICE_NUM
+						FROM INVOICE_LINE
+							WHERE ITEM_ID IN (SELECT ITEM_ID
+											FROM ITEM
+												WHERE LOCATION = 'C'));
+
+
+--==========IN vs. EXISTS============
+--2.Find the invoice number and invoice date for each invoice that contains item ID KH81.
+
+
+
+SELECT INVOICE_NUM, INVOICE_DATE
+	FROM INVOICES
+		WHERE EXISTS (SELECT INVOICE_NUM
+						FROM INVOICE_LINE IL
+							WHERE ITEM_ID = 'KH81'
+							AND I.INVOICE_NUM = IL.INVOICE_NUM);
+
+
+SELECT INVOICE_NUM, INVOICE_DATE
+	FROM INVOICES
+		WHERE INVOICE_NUM IN (SELECT *
+						FROM INVOICE_LINE
+							WHERE ITEM_ID = 'KH81');
+
+
+
+
+--======================Table Self-Join=======================
+--For each pair of customers located in the same city, display the customer ID, first name, last name, and city.
+
+SELECT A.CUST_ID, A.FIRST_NAME, A.LAST_NAME, A_CITY, B.CUST_ID, B.FIRST_NAME, B.LAST_NAME, B.CITY
+	FROM CUSTOMER A INNER JOIN CUSTOMER B ON A.CITY = B.CITY
+		WHERE A.CUST_ID < B.CUST_ID;
+
+
+
+
+--======================Set Operations=======================
+--UNION
+--INTERSECT
+--EXCEPT(DIFFERENT/MINUS)
+--PRODUCT (CARTESIAN PRODUCT)
+--1.List the ID and names of each customer that is either represented by sales rep 10 or currently has invoices on file, or both.
+
+SELECT CUST_ID, FIRST_NAME, LAST_NAME
+	FROM CUSTOMER
+		WHERE REP_ID = '10'
+UNION
+SELECT CUST_ID, FIRST_NAME, LAST_NAME
+	FROM CUSTOMER C INNER JOIN INVOICES I ON C.CUST_ID = I.CUST_ID;
+
+--2.List the ID and names of each customer that is represented by sales rep 10 and that currently has invoices on file.
+
+SELECT CUST_ID, FIRST_NAME, LAST_NAME
+	FROM CUSTOMER
+		WHERE REP_ID = '10'
+INTERSECT
+SELECT CUST_ID, FIRST_NAME, LAST_NAME
+	FROM CUSTOMER C INNER JOIN INVOICES I ON C.CUST_ID = I.CUST_ID;
+
+--3.List the ID and names of each customer that is represented by sales rep 10 but that does not have invoices currently on file.
+
+SELECT CUST_ID, FIRST_NAME, LAST_NAME
+	FROM CUSTOMER
+		WHERE REP_ID = '10'
+EXCEPT
+SELECT CUST_ID, FIRST_NAME, LAST_NAME
+	FROM CUSTOMER C INNER JOIN INVOICES I ON C.CUST_ID = I.CUST_ID;
+
+--4.Form the product of the CUSTOMER and INVOICES tables. Display the customer ID, first name, and last name from the CUSTOMER table, along with the invoice number and invoice date from the INVOICES table.
+
+SELECT * FROM CUSTOMER;
+SELECT * FROM INVOICES;
+
+SELECT CUSTOMER.CUST_ID, FIRST_NAME, LAST_NAME, INVOICE_NUM, INVOICE DATE
+	FROM CUSTOMER CROSS JOIN INVOICES;
+
+
+
+
+
+
+
+--======================ALL AND ANY=======================
+--1.Find the customer ID, full name, current balance, and sales rep ID of each customer whose balance exceeds the maximum balance of all customers represented by sales rep 10.
+
+SELECT CUST_ID, FIRST_NAME, LAST_NAME, BALANCE, REP_ID
+	FROM CUSTOMER
+		WHERE BALANCE > (SELECT MAX(BALANCE)
+					FROM CUSTOMER
+						WHERE REP_ID - '10');
+
+SELECT CUST_ID, FIRST_NAME, LAST_NAME, BALANCE, REP_ID
+	FROM CUSTOMER
+		WHERE BALANCE ALL (SELECT BALANCE
+					FROM CUSTOMER
+						WHERE REP_ID = '10');
+
+--2.Find the customer ID, full name, current balance, and sales rep ID of each customer whose balance is greater than the balance of at least one customer of sales rep 10.
+
+SELECT CUST_ID, FIRST_NAME, LAST_NAME, BALANCE, REP_ID
+	FROM CUSTOMER
+		WHERE BALANCE > (SELECT MIN(BALANCE)
+					FROM CUSTOMER
+						WHERE REP_ID - '10');
+
+SELECT CUST_ID, FIRST_NAME, LAST_NAME, BALANCE, REP_ID
+	FROM CUSTOMER
+		WHERE BALANCE ANY (SELECT BALANCE
+					FROM CUSTOMER
+						WHERE REP_ID = '10');
+
+
+
+
+
+
+--======================Comprehensive Example=======================
+/*List the customer ID, invoice number, invoice date, and invoice total 
+for each invoice with a total that exceeds $250, 
+placed by a customer in good credit standing. 
+Assign the column name INVOICE_TOTAL to the column that displays invoice totals. 
+Order the results by invoice number.*/
+
+
+SELECT CUST_ID, I.INVOICE_NUM, INVOICE_DATE, SUM(QUANTITY * QUOTED_PRICE) AS INVOICE_TOTAL
+	FROM INVOICES I INNER JOIN INVOICE_LINE IL ON I.INVOICE_NUM = IL.INVOICE_NUM
+		WHERE CUST_ID IN (SELECT CUST_ID
+					FROM CUSTOMER
+						WHERE CREDIT_LIMIT > BALANCE)
+		GROUP BY CUST_ID, I.INVOICE_NUM, INVOICE_DATE
+			HAVING SUM(QUANTITY * QUOTED_PRICE) > 250
+				ORDER BY I.INVOICE_NUM;
+
+
+
+
+
+
+
+
